@@ -1,0 +1,9 @@
+# intermediary files
+*.swp
+
+# objects
+*.o
+
+# libraries
+*.a
+

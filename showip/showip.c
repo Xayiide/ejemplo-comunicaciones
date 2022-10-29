@@ -4,7 +4,7 @@
 #include <netdb.h>      /* getaddrinfo */
 #include <string.h>     /* memset      */
 
-#include "inc/apero.h"
+#include "../include/apero.h"
 
 
 int main(int argc, char** argv) {
@@ -29,6 +29,9 @@ int main(int argc, char** argv) {
 	}
 
 	print_addrinfo(res);
+
+	freeaddrinfo(res);
 	
+	return 0;
 }
 

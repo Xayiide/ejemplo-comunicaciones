@@ -12,7 +12,7 @@ all: $(TRGT)
 	@rm -f $(OBJS)
 
 $(TRGT): $(OBJS)
-	$(CC) $(CFLAGS) $^ -Llib -lapero -o $@ 
+	$(CC) $(CFLAGS) $^ -L../libraries -lapero -o $@ 
 
 $(OBJS): $(SRCS)
 	$(CC) $(CFLAGS) -c $^ -o $@

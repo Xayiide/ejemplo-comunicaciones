@@ -4,6 +4,8 @@
 #include <netdb.h>      /* struct addrinfo */
 
 #include <arpa/inet.h>  /* inet_ntop       */
+#include <errno.h>      /* errno           */
+#include <string.h>     /* strerror        */
 
 #include "inc/apero.h"
 
@@ -28,3 +30,31 @@ void print_addrinfo(struct addrinfo *ainfo) {
     }
 }
 
+int get_lo_socket(struct addrinfo **_ainfo, char *port) {
+    int sockfd;
+    struct addrinfo aiaux;
+    struct addrinfo *ainfo = *_ainfo;
+    memset(&aiaux, 0, sizeof(struct addrinfo));
+
+    aiaux.ai_family   = AF_UNSPEC;
+    aiaux.ai_socktype = SOCK_STREAM;
+    aiaux.ai_flags    = AI_PASSIVE; /* localhost */
+
+    getaddrinfo(NULL, port, &aiaux, &ainfo);
+
+    sockfd = socket(ainfo->ai_family, ainfo->ai_socktype, ainfo->ai_protocol);
+
+    if (sockfd < 0) {
+        fprintf(stderr, "%s: %s\n", __PRETTY_FUNCTION__, strerror(errno));
+    }
+    
+    return sockfd;
+}
+
+void *get_in_addr(struct sockaddr *sa) {
+    if (sa->sa_family == AF_INET) {
+        return &(((struct sockaddr_in *)sa)->sin_addr);
+    } else {
+        return &(((struct sockaddr_in6 *)sa)->sin6_addr);
+    }
+}

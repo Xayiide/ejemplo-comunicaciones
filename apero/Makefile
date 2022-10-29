@@ -13,8 +13,8 @@ HDRS = $(SRCS:.c=.h)
 
 
 all: $(TRGT)
-	cp $(TRGT) ../showip/lib/
-	cp inc/$(HDRS) ../showip/inc/
+	cp $(TRGT) ../libraries/
+	cp inc/$(HDRS) ../include/
 
 $(TRGT): $(OBJS)
 	$(AR) $(AFLAGS) $(TRGT) $(OBJS)

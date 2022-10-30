@@ -4,51 +4,50 @@
 #include <sys/socket.h>
 #include <netdb.h>
 
-#include <unistd.h>      /* close     */
+#include <string.h>      /* memset    */
+//#include <unistd.h>      /* close     */
 #include <arpa/inet.h>   /* inet_ntop */
 
 #include "inc/simpleserver.h"
+#include "../include/comun.h"
 #include "../include/apero.h"
 
-#define PORT   6969
-#define PORT_S "6969"
 
 int main(void) {
-    struct addrinfo *res;
+    struct addrinfo hints, *res;
     int sockfd;
 
     int newfd;
-    struct sockaddr_storage newaddr;
-    socklen_t addr_size = sizeof(newaddr);
-    char cip[INET6_ADDRSTRLEN];
-    char buf[MAX_DATASIZE];
-    int  numrecv;
+    struct    sockaddr_storage remote_ip;
+    socklen_t remote_ip_len = sizeof remote_ip;
+    char      remote_addr[INET6_ADDRSTRLEN];
 
-    sockfd = get_lo_socket(&res, PORT_S);
+    memset(&hints, 0, sizeof hints);
+    hints.ai_family   = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags    = AI_PASSIVE;
 
+    if (getaddrinfo(LISTENING_ADDR, LISTENING_PORT, &hints, &res) != 0) {
+        printf("getaddrinfo error\n");
+        return 1;
+    }
+
+    print_addrinfo(res);
+
+    sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
     bind(sockfd, res->ai_addr, res->ai_addrlen);
-
     listen(sockfd, MAX_CONEXIONES);
 
-    newfd = accept(sockfd, (struct sockaddr *)&newaddr, &addr_size);
 
-    inet_ntop(newaddr.ss_family,
-              get_in_addr((struct sockaddr *) &newaddr),
-              cip, sizeof cip);
-    
-    printf("Conexión desde %s\n", cip);
-    numrecv = recv(newfd, buf, MAX_DATASIZE -1, 0);
-    if (numrecv == -1) {
-        printf("Error recibiendo.\n");
-        return -1;
-    }
-    
-    buf[numrecv] = '\0';
+    newfd = accept(sockfd, (struct sockaddr *) &remote_ip, &remote_ip_len);
+    inet_ntop(remote_ip.ss_family,
+              get_in_addr((struct sockaddr *) &remote_ip),
+              remote_addr,
+              sizeof(remote_addr));
 
-    printf("Recibido: '%s'\n", buf);
+    printf("Connection from %s\n", remote_addr);
 
     freeaddrinfo(res);
-    close(sockfd);
 
     return 0;
 }

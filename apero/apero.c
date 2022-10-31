@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdint.h>     /* tipos           */
 #include <sys/types.h>  /* struct addrinfo */
 #include <sys/socket.h> /* struct addrinfo */
 #include <netdb.h>      /* struct addrinfo */
@@ -8,6 +9,7 @@
 #include <string.h>     /* strerror        */
 
 #include "inc/apero.h"
+
 
 void print_addrinfo(struct addrinfo *ainfo) {
     struct addrinfo *p;
@@ -57,4 +59,37 @@ void *get_in_addr(struct sockaddr *sa) {
     } else {
         return &(((struct sockaddr_in6 *)sa)->sin6_addr);
     }
+}
+
+
+uint32_t crearCliente(char dir[INET_ADDRSTRLEN], uint16_t puerto) {
+    cliente        *c;
+    struct in_addr  ia_addr;
+    uint32_t        sockfd;
+    int             ret;
+
+
+    ret = inet_pton(AF_INET, dir, &ia_addr);
+    if (ret != 0) {
+        return 0;
+    }
+
+    c = malloc(sizeof(c));
+    if (c == NULL) {
+        perror("malloc\n");
+        return 0;
+    }
+
+    memset(&(c->saddr), 0, sizeof(c->saddr));
+    c->saddr.sin_family = AF_INET;
+    c->saddr.sin_port   = htons(puerto);
+    c->saddr.sin_addr   = ia_addr;
+    c->dstdir           = dir;
+    c->dstport          = puerto;
+
+    /* connect */
+
+    /* bind, aunque sea cliente */
+
+    return sockfd;
 }

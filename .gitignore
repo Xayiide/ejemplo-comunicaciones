@@ -7,7 +7,12 @@
 # libraries
 *.a
 
+# executables
+prueba
+showip
+
 # IDE files
 *.vscode
 *.project
 *.cproject
+

@@ -27,7 +27,7 @@ int enviarDatos(cliente *c, uint8_t *datos, uint16_t tamdatos) {
 #ifdef DEBUG
     if (ret == 0) {
         printf("Todos los datos enviados correctamente ");
-        printf("")
+        printf("(%zd/%" PRIu16 ")\n", totenv, tamdatos);
     }
 #endif
 

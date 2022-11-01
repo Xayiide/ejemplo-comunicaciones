@@ -6,17 +6,26 @@
 #include <sys/socket.h> /* struct addrinfo */
 #include <netdb.h>      /* struct addrinfo */
 
+typedef enum {
+    CLIENTE  = 1,
+    SERVIDOR = 2
+} tipoCS;
+
 typedef struct {
     int fd;
     struct sockaddr_in saddr;
-    char *dstdir;
-    uint16_t dstport;
+    struct sockaddr_in dir_local;
+    char     *dirdst;
+    uint16_t  puertodst;
+    char     *dirlocal;
+    uint16_t  puertolocal;
 } cliente;
 
 typedef struct {
     int fd;
-    struct sockaddr_in s_addr;
-    uint16_t port;
+    struct sockaddr_in saddr;
+    char *dir;
+    uint16_t puerto;
 } servidor;
 
 
@@ -27,6 +36,20 @@ int get_lo_socket(struct addrinfo **, char *);
 
 void *get_in_addr(struct sockaddr *);
 
-uint32_t crearCliente(char[INET_ADDRSTRLEN], uint16_t);
+cliente *crearCliente(char[INET_ADDRSTRLEN], uint16_t);
+
+servidor *crearServidor(char[INET_ADDRSTRLEN], uint16_t);
+
+int eliminarCliente(cliente *);
+
+int eliminarServidor(servidor *);
+
+int conectarCliente(cliente *);
+
+
+
+void imprimirCliente(cliente *);
+
+void imprimirServidor(servidor *);
 
 #endif /* _APERO_H_ */

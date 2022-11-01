@@ -19,6 +19,8 @@ int main(void) {
 
     imprimirServidor(s);
 
+    iniciarServidor(s, MAX_CONEXIONES);
+
     eliminarServidor(s);
 
     return 0;

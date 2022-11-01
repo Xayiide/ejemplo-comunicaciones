@@ -1,7 +1,7 @@
 #ifndef _SIMPLECLIENT_H_
 #define _SIMPLECLIENT_H_
 
-#include <stdint.h>
+#include <stdint.h> /* uint8_t */
 
 #include "../../include/apero.h"
 

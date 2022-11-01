@@ -1,9 +1,9 @@
-#include <stdio.h>
 
 #include "../include/comun.h"
 #include "../include/apero.h"
-
 #include "inc/simpleclient.h"
+
+#include <stdio.h> /* printf */
 
 int main(void) {
 	cliente *c = crearCliente(LISTENING_ADDR, LISTENING_PORT);

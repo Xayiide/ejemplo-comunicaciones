@@ -1,12 +1,10 @@
 
-#include <stdint.h>
-
-
 #include "../include/apero.h"
 #include "../include/comun.h"
 #include "inc/simpleserver.h"
 
-#include <stdio.h>
+#include <stdio.h>  /* perror  */
+#include <stdint.h> /* uint8_t */
 
 
 int iniciarServidor(servidor *s, uint8_t maxConexiones) {

@@ -24,8 +24,8 @@ typedef struct {
 typedef struct {
     int fd;
     struct sockaddr_in saddr;
-    char *dir;
-    uint16_t puerto;
+    char     *dir;
+    uint16_t  puerto;
 } servidor;
 
 

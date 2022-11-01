@@ -1,8 +1,4 @@
-#include <stdio.h>
-
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
+#include <stdio.h> /* printf */
 
 #include "inc/simpleserver.h"
 #include "../include/comun.h"

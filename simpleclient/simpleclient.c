@@ -5,7 +5,7 @@
 #include "../include/comun.h"
 #include "inc/simpleclient.h"
 
-#include <stdio.h>
+#include <stdio.h>    /* perror */
 #include <inttypes.h> /* formatos de print para los tipos de stdint.h */
 
 

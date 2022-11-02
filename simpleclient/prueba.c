@@ -26,7 +26,9 @@ int main(void) {
 		return -1;
 	}
 
+#ifdef DEBUG
 	imprimirCliente(c);
+#endif
 
 	enviarDatos(c, ejemplo_datos, MAX_DATASIZE);
 

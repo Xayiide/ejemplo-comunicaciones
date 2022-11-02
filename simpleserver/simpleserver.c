@@ -34,7 +34,10 @@ uint8_t bucleConexiones(servidor *s) {
     tam_x = sizeof(saddr_x);
     fd_x  = accept(s->fd, (struct sockaddr *) &saddr_x, &tam_x);
     c     = crearConexion(fd_x, saddr_x);
+
+#ifdef DEBUG
     imprimirConexion(c);
+#endif
 
     tam_recb = recv(c->fd, datos_recb, MAX_DATASIZE, 0);
     if (tam_recb == -1) {
@@ -42,6 +45,7 @@ uint8_t bucleConexiones(servidor *s) {
         return 0;
     }
 
+#ifdef DEBUG
     int i, cols;
     for (i = 0, cols = 0; i < MAX_DATASIZE; i++, cols++) {
         if (cols == 8) {
@@ -51,6 +55,7 @@ uint8_t bucleConexiones(servidor *s) {
         printf("%2.2X ", datos_recb[i]);
     }
     printf("\n");
+#endif
 
     /* solo aceptamos un mensaje del cliente */
     eliminarConexion(c);

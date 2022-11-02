@@ -15,7 +15,9 @@ int main(void) {
         return -1;
     }
 
+#ifdef DEBUG
     imprimirServidor(s);
+#endif
 
     iniciarServidor(s, MAX_CONEXIONES);
 

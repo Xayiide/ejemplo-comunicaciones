@@ -9,19 +9,23 @@ SRCS = apero.c
 OBJS = $(SRCS:.c=.o)
 HDRS = $(SRCS:.c=.h)
 
-.PHONY: all clean re
+.PHONY: all debug clean re
 
 
 all: $(TRGT)
 	cp $(TRGT) ../libraries/
 	cp inc/$(HDRS) ../include/
 
+debug: all
+
+debug: DEBUG=-DDEBUG
+
 $(TRGT): $(OBJS)
 	$(AR) $(AFLAGS) $(TRGT) $(OBJS)
 	@rm -f $(OBJS)
 
 $(OBJS): $(SRCS)
-	$(CC) $(CFLAGS) -c $^
+	$(CC) $(CFLAGS) $(DEBUG) -c $^
 
 clean:
 	@rm -f $(TRGT) $(OBJS)

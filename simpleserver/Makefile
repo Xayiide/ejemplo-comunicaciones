@@ -7,16 +7,20 @@ SRCS = prueba.c simpleserver.c
 OBJS = $(SRCS:.c=.o)
 LIBS = apero
 
-.PHONY: all clean re
+.PHONY: all debug clean re
 
 all: $(TRGT)
 	@rm -f $(OBJS)
 
+debug: all
+
+debug: DEBUG=-DDEBUG
+
 $(TRGT): $(OBJS)
-	$(CC) $(CFLAGS) $^ $(LFLAGS) -o $@ 
+	$(CC) $(CFLAGS) $(DEBUG) $^ $(LFLAGS) -o $@ 
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $^ $(LFLAGS) -o $@
+	$(CC) $(CFLAGS) $(DEBUG) -c $^ $(LFLAGS) -o $@
 
 clean:
 	@rm -f $(TRGT) $(OBJS)

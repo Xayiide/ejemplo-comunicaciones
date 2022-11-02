@@ -6,16 +6,20 @@ SRCS = showip.c
 OBJS = $(SRCS:.c=.o)
 LIBS = apero
 
-.PHONY: all clean re
+.PHONY: all debug clean re
 
 all: $(TRGT)
 	@rm -f $(OBJS)
 
+debug: all
+
+debug: DEBUG=-DDEBUG
+
 $(TRGT): $(OBJS)
-	$(CC) $(CFLAGS) $^ -L../libraries -lapero -o $@ 
+	$(CC) $(CFLAGS) $(DEBUG) $^ -L../libraries -lapero -o $@ 
 
 $(OBJS): $(SRCS)
-	$(CC) $(CFLAGS) -c $^ -o $@
+	$(CC) $(CFLAGS) $(DEBUG) -c $^ -o $@
 
 clean:
 	@rm -f $(TRGT) $(OBJS)

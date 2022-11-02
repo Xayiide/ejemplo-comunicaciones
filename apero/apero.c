@@ -26,7 +26,7 @@ static int rellenarCliente(cliente *c) {
                          dir, INET_ADDRSTRLEN);
         c->dir_local.sin_addr.s_addr = aux.sin_addr.s_addr;
         c->dir_local.sin_port        = aux.sin_port;
-        c->dirlocal    = dir;
+        strncpy(c->dirlocal, dir, INET_ADDRSTRLEN);
         c->puertolocal = ntohs(aux.sin_port);
     }
 
@@ -86,6 +86,9 @@ void *get_in_addr(struct sockaddr *sa) {
     }
 }
 
+
+
+
 cliente *crearCliente(char dir[INET_ADDRSTRLEN], uint16_t puerto) {
     cliente        *c;
     struct in_addr  ia_addr;
@@ -108,12 +111,12 @@ cliente *crearCliente(char dir[INET_ADDRSTRLEN], uint16_t puerto) {
     c->saddr.sin_family = AF_INET;
     c->saddr.sin_port   = htons(puerto);
     c->saddr.sin_addr   = ia_addr;
-    c->dirdst           = dir;
+    strncpy(c->dirdst, dir, INET_ADDRSTRLEN);
     c->puertodst        = puerto;
     
     /* Se rellenarán al llamar a connect() */
-    c->dirlocal           = NULL;
-    c->puertolocal        = 0;
+    memset(c->dirlocal, 0, INET_ADDRSTRLEN);
+    c->puertolocal = 0;
 
     c->dir_local.sin_family      = AF_INET;
     c->dir_local.sin_addr.s_addr = INADDR_ANY;
@@ -140,15 +143,15 @@ servidor *crearServidor(char dir[INET_ADDRSTRLEN], uint16_t puerto) {
     struct in_addr  ia_addr;
     int             ret;
 
-    ret = inet_pton(AF_INET, dir, &ia_addr);
-    if (ret != 1) {
-        perror("inet_pton");
-        return NULL;
-    }
-
     s = malloc(sizeof(servidor));
     if (s == NULL) {
         perror("malloc");
+        return NULL;
+    }
+
+    ret = inet_pton(AF_INET, dir, &ia_addr);
+    if (ret != 1) {
+        perror("inet_pton");
         return NULL;
     }
 
@@ -156,7 +159,7 @@ servidor *crearServidor(char dir[INET_ADDRSTRLEN], uint16_t puerto) {
     s->saddr.sin_family = AF_INET;
     s->saddr.sin_port   = htons(puerto);
     s->saddr.sin_addr   = ia_addr;
-    s->dir              = dir;
+    strncpy(s->dir, dir, INET_ADDRSTRLEN);
     s->puerto           = puerto;
 
     s->fd = socket(PF_INET, SOCK_STREAM, 0);
@@ -174,6 +177,30 @@ servidor *crearServidor(char dir[INET_ADDRSTRLEN], uint16_t puerto) {
 
     return s;
 }
+
+conexion *crearConexion(int sockfd, struct sockaddr_in saddr) {
+    conexion       *conn;
+    char            dir[INET_ADDRSTRLEN];
+
+    conn = malloc(sizeof(conexion));
+    if (conn == NULL) {
+        perror("malloc");
+        return NULL;
+    }
+
+
+    (void) inet_ntop(saddr.sin_family, &(saddr.sin_addr),
+                     dir, INET_ADDRSTRLEN);
+
+    conn->fd     = sockfd;
+    conn->saddr  = saddr;
+    strncpy(conn->dir, dir, INET_ADDRSTRLEN);
+    conn->puerto = ntohs(saddr.sin_port);
+
+    return conn;
+}
+
+
 
 int eliminarCliente(cliente *c) {
     int ret;
@@ -203,6 +230,22 @@ int eliminarServidor(servidor *s) {
     return ret;
 }
 
+int eliminarConexion(conexion *c) {
+    int ret;
+
+    ret = close(c->fd);
+    if (ret != 0) {
+        perror("close");
+    }
+    else {
+        free(c);
+    }
+
+    return ret;
+}
+
+
+
 int conectarCliente(cliente *c) {
     int ret;
 
@@ -223,6 +266,8 @@ int conectarCliente(cliente *c) {
     
     return ret;
 }
+
+
 
 void imprimirCliente(cliente *c) {
     if (c == NULL) {
@@ -255,4 +300,17 @@ void imprimirServidor(servidor *s) {
     printf("          = %d\n", s->saddr.sin_addr.s_addr);
     printf("Puerto escucha: %d\n", s->puerto);
     printf("              = %d\n", (ntohs(s->saddr.sin_port)));
+}
+
+void imprimirConexion(conexion *c) {
+    if (c == NULL) {
+        printf("Puntero nulo. Saliendo\n");
+        return;
+    }
+
+    printf("Socket: %d\n", c->fd);
+    printf("IP Escucha: %s\n", c->dir);
+    printf("          = %d\n", c->saddr.sin_addr.s_addr);
+    printf("Puerto escucha: %d\n", c->puerto);
+    printf("              = %d\n", (ntohs(c->saddr.sin_port)));
 }

@@ -1,9 +1,11 @@
-#include <stdio.h> /* printf */
+#include <stdio.h>  /* printf */
+#include <unistd.h> /* close */
 
 #include "inc/simpleserver.h"
 #include "../include/comun.h"
 #include "../include/apero.h"
 
+#define MEDIO_SEGUNDO 500000
 
 int main(void) {
     servidor *s = crearServidor(LISTENING_ADDR, LISTENING_PORT);
@@ -16,6 +18,10 @@ int main(void) {
     imprimirServidor(s);
 
     iniciarServidor(s, MAX_CONEXIONES);
+
+    while (bucleConexiones(s) == 1) {
+        usleep(MEDIO_SEGUNDO);
+    }
 
     eliminarServidor(s);
 

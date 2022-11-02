@@ -10,4 +10,6 @@
 
 int iniciarServidor(servidor *, uint8_t);
 
+uint8_t bucleConexiones(servidor *);
+
 #endif

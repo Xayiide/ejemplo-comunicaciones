@@ -12,3 +12,5 @@ clean:
 		$(MAKE) -C $$dir -f Makefile $@; \
 	done
 
+re: clean all
+

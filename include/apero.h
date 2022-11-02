@@ -15,20 +15,25 @@ typedef struct {
     int fd;
     struct sockaddr_in saddr;
     struct sockaddr_in dir_local;
-    char     *dirdst;
-    uint16_t  puertodst;
-    char     *dirlocal;
-    uint16_t  puertolocal;
+    char     dirdst[INET_ADDRSTRLEN];
+    uint16_t puertodst;
+    char     dirlocal[INET_ADDRSTRLEN];
+    uint16_t puertolocal;
 } cliente;
 
 typedef struct {
     int fd;
     struct sockaddr_in saddr;
-    char *dir;
+    char     dir[INET_ADDRSTRLEN];
     uint16_t puerto;
 } servidor;
 
-
+typedef struct {
+    int fd;
+    struct sockaddr_in saddr;
+    char     dir[INET_ADDRSTRLEN];
+    uint16_t puerto;
+} conexion;
 
 void print_addrinfo(struct addrinfo *);
 
@@ -40,9 +45,14 @@ cliente *crearCliente(char[INET_ADDRSTRLEN], uint16_t);
 
 servidor *crearServidor(char[INET_ADDRSTRLEN], uint16_t);
 
+conexion *crearConexion(int, struct sockaddr_in);
+
 int eliminarCliente(cliente *);
 
 int eliminarServidor(servidor *);
+
+int eliminarConexion(conexion *);
+
 
 int conectarCliente(cliente *);
 
@@ -51,5 +61,7 @@ int conectarCliente(cliente *);
 void imprimirCliente(cliente *);
 
 void imprimirServidor(servidor *);
+
+void imprimirConexion(conexion *);
 
 #endif /* _APERO_H_ */

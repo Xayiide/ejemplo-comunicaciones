@@ -15,4 +15,4 @@ showip
 *.vscode
 *.project
 *.cproject
-
+*.settings

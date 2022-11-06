@@ -33,3 +33,16 @@ int enviarDatos(cliente *c, uint8_t *datos, uint16_t tamdatos) {
 
     return ret;
 }
+
+int recibirDatos(cliente *c, uint8_t *datos, uint16_t tamdatos) {
+    int tam_recb;
+
+    tam_recb = (int) recv(c->fd, datos, tamdatos, 0);
+
+    if (tam_recb > tamdatos) {
+        printf("Se han recibido más datos de los que cabían en el buffer ");
+        printf("(%d/%" PRIu16 ")\n", tam_recb, tamdatos);
+    }
+
+    return tam_recb;
+}

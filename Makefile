@@ -1,8 +1,10 @@
-SUBDIRS = apero showip simpleclient simpleserver
+SUBDIRS = apero comun showip simpleclient simpleserver
 
-.PHONY: all debug clean re $(SUBDIRS)
+.PHONY: all libs debug clean re $(SUBDIRS)
 
 all: $(SUBDIRS)
+
+libs: apero comun
 
 debug: all
 

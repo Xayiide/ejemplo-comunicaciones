@@ -1,6 +1,6 @@
 CC     = gcc
 CFLAGS = -Wall -Wextra -O0 -g3
-LFLAGS = -L../libraries -lapero
+LFLAGS = -L../libraries -lapero -lcomun
 
 TRGT = prueba 
 SRCS = prueba.c simpleserver.c

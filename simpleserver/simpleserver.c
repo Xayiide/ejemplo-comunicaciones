@@ -3,9 +3,14 @@
 #include "../include/comun.h"
 #include "inc/simpleserver.h"
 
-#include <stdio.h>  /* perror  */
-#include <stdint.h> /* uint8_t */
-#include <unistd.h> /* close   */
+#include <stdio.h>    /* perror  */
+#include <stdint.h>   /* uint8_t */
+#include <unistd.h>   /* close   */
+#include <inttypes.h> /* formato de print para los tipos de stdint.h */
+
+uint8_t ejemplo_datos[6] = {
+    0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x00
+};
 
 
 int iniciarServidor(servidor *s, uint8_t maxConexiones) {
@@ -29,7 +34,7 @@ uint8_t bucleConexiones(servidor *s) {
     socklen_t          tam_x;
 
     ssize_t tam_recb;
-    char datos_recb[MAX_DATASIZE];
+    char    datos_recb[MAX_DATASIZE];
 
     tam_x = sizeof(saddr_x);
     fd_x  = accept(s->fd, (struct sockaddr *) &saddr_x, &tam_x);
@@ -46,23 +51,41 @@ uint8_t bucleConexiones(servidor *s) {
     }
 
 #ifdef DEBUG
-    int i, cols;
-    for (i = 0, cols = 0; i < MAX_DATASIZE; i++, cols++) {
-        if (cols == 8) {
-            cols = 0;
-            printf("\n");
-        }
-        printf("%2.2X ", datos_recb[i]);
-    }
-    printf("\n");
+    printColumns((uint8_t *) datos_recb, MAX_DATASIZE, 8);
 #endif
+
+    if (datos_recb[0] == 0x42) {
+        letrasAleatorias(ejemplo_datos, MAX_DATASIZE);
+        enviarDatos(c, ejemplo_datos, MAX_DATASIZE);
+    }
 
     /* solo aceptamos un mensaje del cliente */
     eliminarConexion(c);
 
-    if (datos_recb[0] == 0x43) {
-        ret = 0;
+    return ret;
+}
+
+int enviarDatos(conexion *c, uint8_t *datos, uint16_t tam) {
+    int     ret    = 0;
+    ssize_t totenv = 0;
+    ssize_t env    = 0;
+
+    while (totenv != tam) {
+        env = send(c->fd, datos, (size_t) tam, 0);
+        if (env == -1) {
+            perror("enviarDatos");
+            ret = -1;
+            break;
+        }
+        totenv += env;
     }
+
+#ifdef DEBUG
+    if (ret == 0) {
+        printf("Todos los datos enviados correctamente ");
+        printf("(%zd/%" PRIu16 ")\n", totenv, tam);
+    }
+#endif
 
     return ret;
 }

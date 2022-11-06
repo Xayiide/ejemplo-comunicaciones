@@ -7,6 +7,6 @@
 
 int enviarDatos(cliente *, uint8_t *, uint16_t);
 
-
+int recibirDatos(cliente *, uint8_t *, uint16_t);
 
 #endif

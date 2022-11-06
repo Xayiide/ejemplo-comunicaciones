@@ -9,6 +9,9 @@
 #include <string.h>     /* strerror        */
 #include <stdlib.h>     /* malloc          */
 #include <unistd.h>     /* close           */
+#include <sys/ioctl.h>  /* ifreq           */
+#include <net/if.h>     /* ifreq           */
+#include <time.h>       /* struct timeval  */
 
 #include "inc/apero.h"
 
@@ -94,6 +97,9 @@ cliente *crearCliente(char dir[INET_ADDRSTRLEN], uint16_t puerto) {
     struct in_addr  ia_addr;
     int             ret;
 
+    struct timeval tv;
+    tv.tv_sec  = 1;
+    tv.tv_usec = 0;
 
     ret = inet_pton(AF_INET, dir, &ia_addr);
     if (ret != 1) {
@@ -135,6 +141,9 @@ cliente *crearCliente(char dir[INET_ADDRSTRLEN], uint16_t puerto) {
         return NULL;
     }
 
+    setsockopt(c->fd, SOL_SOCKET, SO_RCVTIMEO, (const char *) &tv, sizeof(tv));
+
+
     return c;
 }
 
@@ -142,6 +151,7 @@ servidor *crearServidor(char dir[INET_ADDRSTRLEN], uint16_t puerto) {
     servidor       *s;
     struct in_addr  ia_addr;
     int             ret;
+    int             yes = 1;
 
     s = malloc(sizeof(servidor));
     if (s == NULL) {
@@ -165,6 +175,13 @@ servidor *crearServidor(char dir[INET_ADDRSTRLEN], uint16_t puerto) {
     s->fd = socket(PF_INET, SOCK_STREAM, 0);
     if (s->fd == -1) {
         perror("socket");
+        return NULL;
+    }
+
+    ret = setsockopt(s->fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
+    if (ret == -1) {
+        perror("setsockopt");
+        close(s->fd);
         return NULL;
     }
 
@@ -275,7 +292,7 @@ void imprimirCliente(cliente *c) {
         return;
     }
 
-    printf("Socket: %d\n", c->fd);
+    printf("\nSocket: %d\n", c->fd);
     printf("IP destino: %s\n", c->dirdst);
     printf("          = %d\n", c->saddr.sin_addr.s_addr);
     printf("Puerto destino: %d\n", c->puertodst);
@@ -295,7 +312,7 @@ void imprimirServidor(servidor *s) {
         return;
     }
 
-    printf("Socket: %d\n", s->fd);
+    printf("\nSocket: %d\n", s->fd);
     printf("IP Escucha: %s\n", s->dir);
     printf("          = %d\n", s->saddr.sin_addr.s_addr);
     printf("Puerto escucha: %d\n", s->puerto);
@@ -308,9 +325,34 @@ void imprimirConexion(conexion *c) {
         return;
     }
 
-    printf("Socket: %d\n", c->fd);
+    printf("\nSocket: %d\n", c->fd);
     printf("IP Escucha: %s\n", c->dir);
     printf("          = %d\n", c->saddr.sin_addr.s_addr);
     printf("Puerto escucha: %d\n", c->puerto);
     printf("              = %d\n", (ntohs(c->saddr.sin_port)));
+}
+
+
+
+uint8_t *get_mac_address(const int sockfd, const char iface[const]) {
+    int           res;
+    uint8_t      *mac;
+    struct ifreq  ifr;
+
+    memset(&ifr, 0, sizeof(ifr));
+    snprintf(ifr.ifr_name, IFNAMSIZ, "%s", iface);
+
+    res = ioctl(sockfd, SIOCGIFHWADDR, &ifr);
+    if (res < 0) {
+        return NULL;
+    }
+
+    mac = malloc(sizeof(uint8_t) * 6); /* DIR MAC = 6 bytes */
+    if (mac == NULL) {
+        return NULL;
+    }
+
+    memcpy(mac, ifr.ifr_hwaddr.sa_data, sizeof(uint8_t) * 6);
+
+    return mac;
 }

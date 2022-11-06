@@ -64,4 +64,13 @@ void imprimirServidor(servidor *);
 
 void imprimirConexion(conexion *);
 
+
+
+/*                                                                            */
+uint8_t *get_mac_address(const int, const char [const]);
+
+
+
+
+
 #endif /* _APERO_H_ */

@@ -3,7 +3,7 @@ CFLAGS = -Wall -Wextra -O0 -g3
 LFLAGS = -L../libraries -lapero -lcomun
 
 TRGT = prueba 
-SRCS = prueba.c simpleserver.c
+SRCS = prueba.c simpleserver.c estados.c
 OBJS = $(SRCS:.c=.o)
 LIBS = apero
 

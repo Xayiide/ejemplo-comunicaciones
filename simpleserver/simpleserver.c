@@ -83,7 +83,7 @@ int enviarDatos(conexion *c, uint8_t *datos, uint16_t tam) {
 
 #ifdef DEBUG
     if (ret == 0) {
-        printf("Todos los datos enviados correctamente ");
+        printf("Todos los datos [%02X] enviados correctamente ", datos[0]);
         printf("(%zd/%" PRIu16 ")\n", totenv, tam);
     }
 #endif

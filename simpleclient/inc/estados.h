@@ -4,11 +4,11 @@
 /* Se usarán como índices para el puntero a funciones *estados*, así que tienen
  * que tomar valores que sean válidos como índices a ese array */
 typedef enum {
-    EST_INIT   = 0,
-    EST_SALUDA = 1,
-    EST_OPERA  = 2,
-    EST_ADIOS  = 3,
-    EST_CIERRA = 4,
+    EST_INIT   ,
+    EST_MSALUDO,
+    EST_MOPERAC,
+    EST_RRESP  ,
+    EST_CIERRA ,
 } nombre_est;
 const char *ne_a_str(nombre_est);
 
@@ -26,21 +26,21 @@ typedef struct {
 } transicion;
 
 static const transicion transiciones[] = {
-    {EST_INIT,   EXITO,     EST_SALUDA},
-    {EST_INIT,   FRACASO,   EST_CIERRA},
-    {EST_INIT,   REINTENTA, EST_INIT},
+    {EST_INIT,    EXITO,     EST_MSALUDO},
+    {EST_INIT,    FRACASO,   EST_CIERRA},
+    {EST_INIT,    REINTENTA, EST_INIT},
 
-    {EST_SALUDA, EXITO,     EST_OPERA},
-    {EST_SALUDA, FRACASO,   EST_CIERRA},
-    {EST_SALUDA, REINTENTA, EST_SALUDA},
+    {EST_MSALUDO, EXITO,     EST_MOPERAC},
+    {EST_MSALUDO, FRACASO,   EST_CIERRA},
+    {EST_MSALUDO, REINTENTA, EST_MSALUDO},
 
-    {EST_OPERA,  EXITO,     EST_ADIOS},
-    {EST_OPERA,  FRACASO,   EST_CIERRA},
-    {EST_OPERA,  REINTENTA, EST_OPERA},
+    {EST_MOPERAC, EXITO,     EST_RRESP},
+    {EST_MOPERAC, FRACASO,   EST_CIERRA},
+    {EST_MOPERAC, REINTENTA, EST_MOPERAC},
 
-    {EST_ADIOS,  EXITO,     EST_CIERRA},
-    {EST_ADIOS,  FRACASO,   EST_CIERRA},
-    {EST_ADIOS,  REINTENTA, EST_ADIOS},
+    {EST_RRESP,   EXITO,     EST_MOPERAC},
+    {EST_RRESP,   FRACASO,   EST_CIERRA},
+    {EST_RRESP,   REINTENTA, EST_RRESP},
 
     {EST_CIERRA,  EXITO,     EST_CIERRA},
     {EST_CIERRA,  FRACASO,   EST_CIERRA},
@@ -50,16 +50,16 @@ static const transicion transiciones[] = {
 #define ESTADO_INICIAL EST_INIT
 #define ESTADO_FINAL   EST_CIERRA
 
-valor_ret est_init  (void);
-valor_ret est_saluda(void);
-valor_ret est_opera (void);
-valor_ret est_adios (void);
-valor_ret est_cierra(void);
+valor_ret est_init   (void);
+valor_ret est_msaludo(void);
+valor_ret est_moperac(void);
+valor_ret est_rresp  (void);
+valor_ret est_cierra (void);
 
 nombre_est buscar_transicion(nombre_est, valor_ret);
 
-static valor_ret (* estados[])(void) = {est_init, est_saluda, est_opera,
-                                        est_adios, est_cierra};
+static valor_ret (* estados[])(void) = {est_init, est_msaludo, est_moperac,
+                                        est_rresp, est_cierra};
 
 
 #endif

@@ -3,14 +3,14 @@
 
 static const char *estados_str[] = {
     "ESTADO INICIAL",
-    "ESTADO SALUDA",
-    "ESTADO OPERA",
-    "ESTADO ADIOS",
+    "ESTADO MANDAR SALUDO",
+    "ESTADO MANDAR OPERACIÓN",
+    "ESTADO RECIBIR ADIÓS",
     "ESTADO CIERRA",
 };
 
 static const char *retorno_str[] = {
-    "EXITO",
+    "ÉXITO",
     "FRACASO",
     "REINTENTA",
 };

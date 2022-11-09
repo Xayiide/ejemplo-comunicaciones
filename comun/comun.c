@@ -36,3 +36,14 @@ void letrasAleatorias(uint8_t *buff, uint64_t tam) {
         buff[i] = abc[rand() % 53];
     }
 }
+
+int debug(const char *format, ...) {
+    int result = 5;
+#ifdef DEBUG
+    va_list args;
+    va_start(args, format);
+    result = vprintf(format, args);
+    va_end(args);
+#endif
+    return result;
+}

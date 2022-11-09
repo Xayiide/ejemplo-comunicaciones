@@ -5,7 +5,7 @@
 #include "../include/comun.h"
 #include "../include/apero.h"
 
-#define MEDIO_SEGUNDO 500000
+#define ESPERA 100000
 
 int main(void) {
     servidor *s = crearServidor(LISTENING_ADDR, LISTENING_PORT);
@@ -22,7 +22,7 @@ int main(void) {
     iniciarServidor(s, MAX_CONEXIONES);
 
     while (bucleConexiones(s) == 1) {
-        usleep(MEDIO_SEGUNDO);
+        usleep(ESPERA);
     }
 
     eliminarServidor(s);

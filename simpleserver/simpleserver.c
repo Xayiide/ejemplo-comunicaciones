@@ -59,8 +59,9 @@ uint8_t bucleConexiones(servidor *s) {
         enviarDatos(c, ejemplo_datos, MAX_DATASIZE);
     }
 
-    /* solo aceptamos un mensaje del cliente */
-    eliminarConexion(c);
+    if (datos_recb[0] == 0x00) {
+        eliminarConexion(c);
+    }
 
     return ret;
 }

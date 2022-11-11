@@ -107,9 +107,15 @@ valor_ret est_roperac(void) {
     uint8_t datos_recb[MAX_DATASIZE];
 
     tam_recb = recv(c->fd, (char *) datos_recb, MAX_DATASIZE, 0);
+    if (tam_recb == 0) {
+        debug("Cliente desconectado.\n");
+        debug("     ESTADO RECIBE OPERACIÓN --> (%s)\n", vr_a_str(FRACASO));
+        return FRACASO;
+    }
+
     if (tam_recb == -1) {
         debug("Error recibiendo datos.\n");
-        debug("     ESTADO RECIBE SALUDO --> (%s)\n", vr_a_str(FRACASO));
+        debug("     ESTADO RECIBE OPERACIÓN --> (%s)\n", vr_a_str(FRACASO));
         return FRACASO;
     }
 #ifdef DEBUG
@@ -205,12 +211,6 @@ int main(void) {
         est_act = buscar_transicion(est_act, ret);
     }
 
-
-    while (bucleConexiones(s) == 1) {
-        usleep(ESPERA);
-    }
-
-    eliminarServidor(s);
 
     return 0;
 }

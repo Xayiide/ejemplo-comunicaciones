@@ -64,6 +64,12 @@ valor_ret est_cierra (void);
 
 nombre_est buscar_transicion(nombre_est, valor_ret);
 
+
+uint8_t *procesa_comando(uint8_t *, uint8_t);
+
+
+
+
 static valor_ret (* estados[])(void) = {est_init, est_acepta, est_rsaludo,
                                         est_roperac, est_opera, est_cierra};
 

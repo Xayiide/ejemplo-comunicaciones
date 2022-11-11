@@ -17,5 +17,3 @@ showip
 *.cproject
 *.settings
 
-# Ignora el directorio include
-include/*

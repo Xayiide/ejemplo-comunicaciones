@@ -5,11 +5,17 @@
 #include "inc/estados.h"
 #include "../include/comun.h"
 #include "../include/apero.h"
+#include "../include/simplecmd.h"
 
 #define ESPERA 100000
 
+/* TODO: Convertir estas variables globales en un struct o algo que se pueda
+ * pasar de un estado a otro
+ */
 servidor *s;
 conexion *c;
+uint8_t comando[MAX_DATASIZE] = {0};
+
 
 valor_ret est_init(void) {
     debug(" --> ESTADO INICIAL\n");
@@ -82,14 +88,14 @@ valor_ret est_rsaludo(void) {
     printColumns((uint8_t *) datos_recb, 1, 8);
 #endif
 
-    if (datos_recb[0] != 0x41) {
+    if (datos_recb[0] != CMD_SALUDO) {
         debug("El mensaje recibido no es un saludo.\n");
         debug("     ESTADO RECIBE SALUDO --> (%s)\n", vr_a_str(FRACASO));
         return FRACASO;
     }
 
     letrasAleatorias(respuesta, MAX_DATASIZE);
-    respuesta[0] = 0x41;
+    respuesta[0] = CMD_SALUDO;
     if (enviarDatos(c, respuesta, MAX_DATASIZE) == -1) {
         debug("Error enviando respuesta.\n");
         debug("     ESTADO RECIBE SALUDO --> (%s)\n", vr_a_str(FRACASO));
@@ -122,6 +128,8 @@ valor_ret est_roperac(void) {
     debug("datos_recb: ");
     printColumns((uint8_t *) datos_recb, 1, 8);
 #endif
+
+
 
     if (datos_recb[0] != 0xFF) {
         debug("Los datos recibidos no contienen un comando.\n");

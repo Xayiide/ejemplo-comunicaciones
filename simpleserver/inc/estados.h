@@ -66,6 +66,7 @@ nombre_est buscar_transicion(nombre_est, valor_ret);
 
 
 uint8_t *procesa_comando(uint8_t *, uint8_t);
+void procesa_suma(uint8_t *, uint8_t *);
 
 
 

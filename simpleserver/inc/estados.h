@@ -1,6 +1,8 @@
 #ifndef _ESTADOS_H_
 #define _ESTADOS_H_
 
+#include "../../include/apero.h"
+
 /* Se usarán como índices para el puntero a funciones *estados*, así que tienen
  * que tomar valores que sean válidos como índices a ese array */
 typedef enum {
@@ -52,6 +54,7 @@ static const transicion transiciones[] = {
     {EST_CIERRA,  REINTENTAR, EST_CIERRA},
 };
 
+
 #define ESTADO_INICIAL EST_INIT
 #define ESTADO_FINAL   EST_CIERRA
 
@@ -65,13 +68,11 @@ valor_ret est_cierra (void);
 nombre_est buscar_transicion(nombre_est, valor_ret);
 
 
-uint8_t *procesa_comando(uint8_t *, uint8_t);
-void procesa_suma(uint8_t *, uint8_t *);
+valor_ret procesa_comando(uint8_t *, uint8_t, uint8_t *);
+void procesa_suma (uint8_t *, uint8_t *);
+void procesa_resta(uint8_t *, uint8_t *);
 
 
 
-
-static valor_ret (* estados[])(void) = {est_init, est_acepta, est_rsaludo,
-                                        est_roperac, est_opera, est_cierra};
 
 #endif

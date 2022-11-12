@@ -1,11 +1,11 @@
 
-#include <stdint.h>
 
+#include "inc/simpleclient.h"
 #include "../include/apero.h"
 #include "../include/comun.h"
-#include "inc/simpleclient.h"
 
-#include <stdio.h>    /* perror */
+#include <stdio.h>    /* perror  */
+#include <stdint.h>   /* uint8_t */
 #include <inttypes.h> /* formatos de print para los tipos de stdint.h */
 
 

@@ -1,7 +1,7 @@
 
+#include "inc/simpleserver.h"
 #include "../include/apero.h"
 #include "../include/comun.h"
-#include "inc/simpleserver.h"
 
 #include <stdio.h>    /* perror  */
 #include <stdint.h>   /* uint8_t */
@@ -11,6 +11,7 @@
 uint8_t ejemplo_datos[6] = {
     0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x00
 };
+
 
 
 int iniciarServidor(servidor *s, uint8_t maxConexiones) {
@@ -25,6 +26,7 @@ int iniciarServidor(servidor *s, uint8_t maxConexiones) {
     return ret;
 }
 
+#if 0
 uint8_t bucleConexiones(servidor *s) {
     uint8_t ret = 1;   
 
@@ -65,6 +67,7 @@ uint8_t bucleConexiones(servidor *s) {
 
     return ret;
 }
+#endif
 
 int enviarDatos(conexion *c, uint8_t *datos, uint16_t tam) {
     int     ret    = 0;

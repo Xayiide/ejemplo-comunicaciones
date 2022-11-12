@@ -57,9 +57,10 @@ valor_ret est_rresp  (void);
 valor_ret est_cierra (void);
 
 nombre_est buscar_transicion(nombre_est, valor_ret);
+uint8_t *pide_suma (uint8_t, uint8_t);
+uint8_t *pide_resta(uint8_t, uint8_t);
 
-static valor_ret (* estados[])(void) = {est_init, est_msaludo, est_moperac,
-                                        est_rresp, est_cierra};
+
 
 
 #endif

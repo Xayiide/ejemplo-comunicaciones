@@ -60,7 +60,8 @@ nombre_est buscar_transicion(nombre_est, valor_ret);
 uint8_t *pide_suma (uint8_t, uint8_t);
 uint8_t *pide_resta(uint8_t, uint8_t);
 
-
+valor_ret procesa_respuesta(uint8_t *, uint8_t);
+uint16_t  procesa_suma(uint8_t *);
 
 
 #endif

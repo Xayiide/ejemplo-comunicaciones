@@ -94,16 +94,17 @@ valor_ret est_rsaludo(void) {
     debug(" --> ESTADO RECIBE SALUDO\n");
     valor_ret ret = EXITO;
     ssize_t tam_recb;
-    uint8_t datos_recb[MAX_DATASIZE];
-    uint8_t respuesta[MAX_DATASIZE];
+    uint8_t datos_recb[CMD_TAM];
+    uint8_t respuesta[RESP_SALUDO_LEN];
 
-    tam_recb = recv(c->fd, (char *) datos_recb, MAX_DATASIZE, 0);
+    tam_recb = recv(c->fd, (char *) datos_recb, CMD_TAM, 0);
     if (tam_recb == -1) {
         debug("Error recibiendo datos.\n");
         debug("     ESTADO RECIBE SALUDO --> (%s)\n", vr_a_str(FRACASO));
         return FRACASO;
     }
 
+    /* FIXME: ¿Tiene sentido esto con el tamaño del recv en CMD_TAM? */
     if (tam_recb != CMD_TAM) {
         debug("El tamaño de los datos recibidos no es el esperado.\n");
         debug(" [recibidos:esperados] = [%d:%d]\n", tam_recb, CMD_TAM);
@@ -111,7 +112,7 @@ valor_ret est_rsaludo(void) {
     }
 #ifdef DEBUG
     debug("datos_recb:\n");
-    printColumns((uint8_t *) datos_recb, 1, 8);
+    printColumns((uint8_t *) datos_recb, tam_recb, 8);
 #endif
 
     if (datos_recb[0] != CMD_SALUDO) {
@@ -121,7 +122,7 @@ valor_ret est_rsaludo(void) {
     }
 
     memcpy(respuesta, RESP_SALUDO, RESP_SALUDO_LEN);
-    if (enviarDatos(c, respuesta, MAX_DATASIZE) == -1) {
+    if (enviarDatos(c, respuesta, RESP_SALUDO_LEN) == -1) {
         debug("Error enviando respuesta.\n");
         debug("     ESTADO RECIBE SALUDO --> (%s)\n", vr_a_str(FRACASO));
         return FRACASO;
@@ -248,10 +249,13 @@ void procesa_suma(uint8_t* datos, uint8_t *res) {
     uint8_t  sumando1  = datos[1];
     uint8_t  sumando2  = datos[2];
     uint16_t resultado = sumando1 + sumando2;
+    debug("PROCESANDO SUMA %hhu + %hhu = %hu\n", sumando1, sumando2, resultado);
 
     resultado = htons(resultado);
-    memcpy(res, &resultado, sizeof(uint16_t));
-}
+    res[0] = CMD_SUMA;
+    memcpy(&res[CMD_TAM], &resultado, sizeof(uint16_t));
+    printColumns(res, CMD_TAM + SUMA_TAM, 8);
+ }
 
 void procesa_resta(uint8_t *datos, uint8_t *res) {
     uint8_t  restando1 = datos[1];

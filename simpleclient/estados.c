@@ -1,6 +1,8 @@
 #include <stdio.h>
-#include <stdint.h> /* uints */
-#include <stdlib.h> /* free  */
+#include <stdint.h>    /* uints  */
+#include <stdlib.h>    /* free   */
+#include <string.h>    /* memcpy */
+#include <arpa/inet.h> /* ntohs  */
 
 #include "inc/estados.h"
 #include "inc/simpleclient.h"
@@ -78,7 +80,7 @@ valor_ret est_msaludo(void) {
         ret = EXITO;
 #ifdef DEBUG
         debug("datos_recb:\n");
-        printColumns(datos_recb, 1, 8);
+        printColumns(datos_recb, tam_recb, 8);
 #endif
     } else {
         ret = FRACASO;
@@ -134,12 +136,7 @@ valor_ret est_rresp(void) {
         debug("datos_recb:\n");
         printColumns(datos_recb, 1, 8);
 #endif
-        if (datos_recb[0] == 0xFF) {
-            ret = EXITO;
-        }
-        else {
-            ret = FRACASO;
-        }
+        ret = procesa_respuesta(datos_recb, tam_recb);
     } else {
         ret = FRACASO;
         debug("No recibí datos\n");
@@ -184,4 +181,45 @@ uint8_t *pide_suma(uint8_t sumando1, uint8_t sumando2) {
     peticion_op[2] = sumando2;
 
     return peticion_op;
+}
+
+valor_ret procesa_respuesta(uint8_t *datos, uint8_t longitud) {
+    valor_ret ret = EXITO;
+    uint8_t cmd;
+
+    if (longitud == 0) {
+        debug("La respuesta tiene longitud 0.\n");
+        return EXITO; /* volvemos a mandar operación */
+    }
+
+    cmd = datos[0];
+
+    switch(cmd) {
+    case CMD_SUMA: {
+        uint16_t res = 0;
+        if (longitud < CMD_TAM + sizeof(uint16_t)) { /* respuesta = uint16_t */
+            debug("El comando SUMA no tiene la longitud adecuada.\n");
+            return FRACASO;
+        } else {
+            res = procesa_suma(datos);
+            debug("RESULTADO SUMA: %hu\n", res);
+        }
+    }
+        break;
+    default:
+        debug("0x%02X no es un comando válido.\n", cmd);
+        break;
+    }
+
+    return ret;
+}
+
+uint16_t procesa_suma(uint8_t *datos) {
+    uint16_t resultado;
+    uint8_t aux[2];
+
+    memcpy(aux, &datos[1], sizeof(uint16_t));
+    resultado = ntohs((uint16_t) *aux);
+
+    return resultado;
 }
